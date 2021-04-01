@@ -4,7 +4,7 @@ import routes from "./routes/index.mjs";
 
 // Environment Variables
 //-----------------------------------------------------------------------------
-const SERVER_PORT = ( process.env.SERVER_PORT || 8000 )
+const SERVER_PORT = ( process.env.SERVER_PORT || 8000 );
 
 // App Initialization
 //-----------------------------------------------------------------------------
