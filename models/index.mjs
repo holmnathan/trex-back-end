@@ -23,6 +23,7 @@ const connectDatabase = async () => {
   const databaseUrl = `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`
   // Database connection options
   const databaseOptions = {
+    useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
   }
