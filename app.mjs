@@ -1,4 +1,5 @@
 import express from "express";
+import ora from "ora";
 import chalk from "chalk";
 import routes from "./routes/index.mjs";
 
@@ -25,11 +26,17 @@ app.use("/api/", routes);
 
 // Server
 //-----------------------------------------------------------------------------
+// Ora CLI Spinner options
+const OraOptions = {
+  text: chalk`{blue Trex API Server:} Connecting`,
+  color: "blue"
+}
+
+const spinner = ora(OraOptions).start(); // Start spinner
 const server = app.listen(SERVER_PORT, () => {
-  console.log("------------------------------------------------------------")
-  console.log(chalk`{blue ${app.get("title")}}`)
-  console.log(`Running on port ${SERVER_PORT}`)
-  console.log("------------------------------------------------------------")
+  setTimeout(() => {
+    spinner.succeed(chalk`{blue Trex API Server:} Connected on port (${SERVER_PORT})`) // Success Message
+  }, 2000);
 });
 
 export default server;
