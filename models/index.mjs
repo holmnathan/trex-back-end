@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import chalk from "chalk";
 import ora from "ora";
 
+import User from "./UserSchema.mjs"
+
 // Environment Variables
 //-----------------------------------------------------------------------------
 const { DATABASE_NAME, DATABASE_HOST, DATABASE_PORT } = process.env;
@@ -30,4 +32,6 @@ const connectDatabase = async () => {
 // Connect to Database
 connectDatabase();
 
-export default {}
+export default {
+  User
+}
