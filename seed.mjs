@@ -1,5 +1,5 @@
-import database from "./models/index.mjs";
 import ora from "ora";
+import database from "./models/index.mjs";
 
 const { User } = database;
 
@@ -59,7 +59,7 @@ const findUserByEmail = async (email) => {
   const spinner = ora(`Email ${email}`).start();
   try {
     const user = await User.findByEmail(email);
-    if (!user) throw new Error(`User Not Found`);
+    if (!user) throw new Error("User Not Found");
     spinner.succeed(`Email ${email}: (User Found)`);
     process.exit();
   } catch (error) {
@@ -76,9 +76,9 @@ const findUserByEmail = async (email) => {
 // });
 
 // Test if password is valid
-// validatePassword("wendy@wendys.com", "1234test");
+validatePassword("burger@king.com", "1234test");
 
 // Delete all Users
 // deleteAllUsers();
 
-findUserByEmail("burger@king.com");
+// findUserByEmail("burger@king.com");

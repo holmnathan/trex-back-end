@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
-import uniqueValidator from "mongoose-unique-validator";
-import argon2 from "argon2";
-import ora from "ora";
+import mongoose from 'mongoose';
+import uniqueValidator from 'mongoose-unique-validator';
+import argon2 from 'argon2';
+import ora from 'ora';
 const { Schema, model } = mongoose;
 
 // User Schema
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 const UserSchema = new Schema({
   full_name: {
     type: String,
@@ -32,19 +32,19 @@ const UserSchema = new Schema({
 });
 
 // Middleware
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Throw validation error when "unique" constraint is not met
 UserSchema.plugin(uniqueValidator);
 
 // Password Authentication bcrypt
 // https://mongodb.com/blog/post/password-authentication-with-mongoose-part-1
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-UserSchema.pre("save", async function (next) {
-  var user = this;
+UserSchema.pre('save', async function (next) {
+  const user = this;
 
   // Only hash the password if it is modified or new.
-  if (!user.isModified("password")) return next();
+  if (!user.isModified('password')) return next();
 
   try {
     const argonOptions = {
@@ -71,7 +71,7 @@ UserSchema.methods.validPassword = async function (candidatePassword) {
   try {
     const isValidPass = await argon2.verify(this.password, candidatePassword);
     if (!isValidPass) {
-      throw new Error("Unauthorized");
+      throw new Error('Unauthorized');
     }
     spinner.succeed(`Password: ${this.email} (Authorized)`);
     return isValidPass;
@@ -86,4 +86,4 @@ UserSchema.statics.findByEmail = function (email) {
   return this.findOne({ email: email });
 };
 
-export default model("User", UserSchema);
+export default model('User', UserSchema);
