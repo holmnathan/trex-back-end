@@ -81,4 +81,9 @@ UserSchema.methods.validPassword = async function (candidatePassword) {
   }
 };
 
+// Find a user by their email address
+UserSchema.statics.findByEmail = function (email) {
+  return this.findOne({ email: email });
+};
+
 export default model("User", UserSchema);
