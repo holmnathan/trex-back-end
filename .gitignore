@@ -106,3 +106,4 @@ dist
 # Nova Application Files
 .nova
 /.eslintrc.json
+.DS_Store
