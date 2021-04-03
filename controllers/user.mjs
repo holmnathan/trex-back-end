@@ -1,15 +1,17 @@
-import database from "../models/index.mjs";
+const index = (request, response) => {
+  response.json('User');
+};
 
-const index = ( request, response ) => {
-  response.json("User");
-}
+const login = (request, response) => {
+  response.json(request.user);
+};
 
-const login = ( request, response ) => {
-  console.log("POST: /login");
-  console.log(request.body)
-}
+const test = (request, response) => {
+  response.json({ message: 'Endpoint Valid: User' });
+};
 
 export default {
   index,
-  login
-}
+  login,
+  test,
+};
