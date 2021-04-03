@@ -45,11 +45,11 @@ const testPassword = (userId, candidatePassword) => {
 }
 
 // Create a new User
-createUser({
-  full_name: "Tester",
-  email: "burger@king.com",
-  password: "1234test"
-});
+// createUser({
+//   full_name: "Tester",
+//   email: "wendy@wendys.com",
+//   password: "1234test"
+// });
 
 // Test if password is valid
-// testPassword("60678478d9d8073cd36e50eb", "1234test");
+testPassword("6067dfc66630785d2784fc1c", "1234test");

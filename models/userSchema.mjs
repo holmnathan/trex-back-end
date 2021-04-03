@@ -1,10 +1,8 @@
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import bcrypt from "bcrypt";
+import argon2 from "argon2";
 import ora from "ora";
 const { Schema, model } = mongoose;
-
-const saltRounds = 10;
 
 // User Schema
 //-----------------------------------------------------------------------------
@@ -49,7 +47,11 @@ UserSchema.pre("save", async function(next) {
   if (!user.isModified("password")) return next();
 
   try {
-    const hash = await bcrypt.hash(user.password, saltRounds);
+    const argonOptions = {
+      type: argon2.argon2id // 
+    }
+    
+    const hash = await argon2.hash(user.password, argonOptions);
     
     // Override the clear text password with the hashed one.
     user.password = hash;
@@ -63,15 +65,14 @@ UserSchema.pre("save", async function(next) {
 UserSchema.methods.validPassword = async function(candidatePassword) {
   const spinner = ora(`Password: ${this.email}`).start();
   try {
-    const isValidPass = await bcrypt.compareSync(candidatePassword, this.password);
+    const isValidPass = await argon2.verify(this.password, candidatePassword);
     if (!isValidPass) {
-      spinner.fail();
-      return isValidPass;
+      throw new Error("Unauthorized");
     }
-    spinner.succeed();
+    spinner.succeed(`Password: ${this.email} (Authorized)`);
     return isValidPass;
   } catch (error) {
-    spinner.fail();
+    spinner.fail(`Password: ${this.email} (${error.message})`);
     return false;
   }
 };
