@@ -1,55 +1,69 @@
 import database from "./models/index.mjs";
 import ora from "ora";
 
-const createUser = (candidateUser) => {
-  
-  const spinner = ora("Create User").start();
-  setTimeout(
-    async () => {
-      try {
-        const user = await new database.User(candidateUser);
-        
-        await user.save();
-        
-        spinner.succeed(`User Created | ${user.full_name}`);
-        process.exit();
-      } catch (error) {
-        spinner.fail(`User Not Created | ${error.message}`);
-        process.exit(1);
-      }
-  }, 1000);
-}
+const { User } = database;
 
-const testPassword = (userId, candidatePassword) => {
-  const spinner = ora("Validating Password…").start();
-  setTimeout(
-    async () => {
-      try {
-        const user = await database.User.findById(userId);
-        
-        user.validPassword(candidatePassword, function(err, isMatch) {
-          if (err) throw err;
-          if (isMatch) {
-            spinner.succeed(`Password Valid: User “${user.email}”`);
-            process.exit();
-          }
-          
-          spinner.fail(`Incorrect Password: User “${user.email}”`);
-          process.exit(1);
-        });
-      } catch (error) {
-        spinner.fail(`Password Validation Error: “${error.message}”`);
-        process.exit(1);
-      }
+const createUser = (candidateUser) => {
+  const spinner = ora("Create User").start();
+  setTimeout(async () => {
+    try {
+      const user = await new User(candidateUser);
+
+      await user.save();
+
+      spinner.succeed(`User Created | ${user.full_name}`);
+      process.exit();
+    } catch (error) {
+      spinner.fail(`User Not Created | ${error.message}`);
+      process.exit(1);
+    }
   }, 1000);
-}
+};
+
+const validatePassword = async (candidateEmail, candidatePassword) => {
+  try {
+    // Find User by candidate email address
+    const user = await User.findOne({
+      email: candidateEmail,
+    });
+
+    // Throw error if the user is not found.
+    if (!user) throw new Error("User Not Found.");
+
+    // Validate password in database against candidate password
+    await user.validPassword(candidatePassword);
+    process.exit();
+  } catch (error) {
+    console.log(`Password Validation Error: (${error.message})`);
+    process.exit(1);
+  }
+};
+
+const deleteAllUsers = () => {
+  const spinner = ora("Delete All Users").start();
+  setTimeout(async () => {
+    try {
+      const deletedUsers = await User.deleteMany();
+      spinner.succeed(
+        `Delete All Users: (${deletedUsers.deletedCount} Deleted)`
+      );
+      process.exit();
+    } catch (error) {
+      spinner.fail(`Delete All Users: (${error.message})`);
+      process.exit(1);
+    }
+  });
+};
 
 // Create a new User
-// createUser({
-//   full_name: "Tester",
-//   email: "wendy@wendys.com",
-//   password: "1234test"
-// });
+createUser({
+  full_name: "Tester",
+  email: "burger@king.com",
+  password: "1234test",
+});
 
 // Test if password is valid
-testPassword("6067dfc66630785d2784fc1c", "1234test");
+// validatePassword("wendy@wendys.com", "1234test");
+
+// Delete all Users
+// deleteAllUsers();
