@@ -2,6 +2,8 @@ import express from "express";
 import ora from "ora";
 import chalk from "chalk";
 import routes from "./routes/index.mjs";
+import localStrategy from "./auth/passport.mjs";
+import passport from "passport";
 
 // Environment Variables
 //-----------------------------------------------------------------------------
@@ -14,7 +16,8 @@ app.set("title", "Trex API Server");
 
 // Middleware
 //-----------------------------------------------------------------------------
-app.use(express.json()); // JSON parsing
+app.use( express.json() ); // JSON parsing
+app.use( passport.initialize() );
 
 // Routes
 //-----------------------------------------------------------------------------

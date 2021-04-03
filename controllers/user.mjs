@@ -1,7 +1,15 @@
 import database from "../models/index.mjs";
 
 const index = ( request, response ) => {
-  response.json("User")
+  response.json("User");
 }
 
-export default {index}
+const login = ( request, response ) => {
+  console.log("POST: /login");
+  console.log(request.body)
+}
+
+export default {
+  index,
+  login
+}
