@@ -55,15 +55,30 @@ const deleteAllUsers = () => {
   });
 };
 
+const findUserByEmail = async (email) => {
+  const spinner = ora(`Email ${email}`).start();
+  try {
+    const user = await User.findByEmail(email);
+    if (!user) throw new Error(`User Not Found`);
+    spinner.succeed(`Email ${email}: (User Found)`);
+    process.exit();
+  } catch (error) {
+    spinner.fail(`Email ${email}: (${error.message})`);
+    process.exit(1);
+  }
+};
+
 // Create a new User
-createUser({
-  full_name: "Tester",
-  email: "burger@king.com",
-  password: "1234test",
-});
+// createUser({
+//   full_name: "Tester",
+//   email: "burger@king.com",
+//   password: "1234test",
+// });
 
 // Test if password is valid
 // validatePassword("wendy@wendys.com", "1234test");
 
 // Delete all Users
 // deleteAllUsers();
+
+findUserByEmail("burger@king.com");
