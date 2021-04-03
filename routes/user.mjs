@@ -1,16 +1,25 @@
 import { Router } from 'express';
 import passport from 'passport';
-import controller from '../controllers/user.mjs';
+import userController from '../controllers/user.mjs';
 
 const router = Router();
 // Routes
 // -----------------------------------------------------------------------------
-router.get('/', controller.index);
-router.post('/login', passport.authenticate('login'), controller.login);
+// Test Route Validty
+router.get('/test', userController.test);
+// Test JSON Web Authorization Token
 router.get(
-  '/test',
-  passport.authenticate('jwt', { session: false }),
-  controller.test
+  '/test-authorized',
+  passport.authenticate('jwt'),
+  userController.testAuthorized
+);
+// User Log In
+router.post('/login', passport.authenticate('login'), userController.login);
+// User Creation
+router.post(
+  '/register',
+  passport.authenticate('create'),
+  userController.register
 );
 
 export default router;

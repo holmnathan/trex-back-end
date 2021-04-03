@@ -14,6 +14,7 @@ const { JWT_SECRET } = process.env; // Environment Variables
 const options = {
   secretOrKey: JWT_SECRET,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  session: false,
 };
 
 const jwtStrategy = passport.use(

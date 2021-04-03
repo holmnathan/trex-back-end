@@ -9,11 +9,36 @@ const { Strategy } = passportLocal;
 
 const options = {
   usernameField: 'email',
+  session: false,
+  passReqToCallback: true,
+  failWithError: true,
 };
 
-const localStrategy = passport.use(
+const create = passport.use(
+  'create',
+  new Strategy(options, async (request, email, password, done) => {
+    const { full_name, display_name } = request.body;
+    // Initialize spinner outside of try / catch statement
+    const spinner = ora(`Create User: ${email}`).start();
+    try {
+      const user = await User.create({
+        email,
+        password,
+        full_name,
+        display_name,
+      });
+      spinner.succeed();
+      return done(null, user);
+    } catch (error) {
+      spinner.fail(`Create User: ${email} (${error.message})`);
+      return done(null, false, { message: error.message });
+    }
+  })
+);
+
+const login = passport.use(
   'login',
-  new Strategy(options, async (email, password, done) => {
+  new Strategy(options, async (request, email, password, done) => {
     // Initialize spinner outside of try / catch statement
     const spinner = ora(`Log In: ${email}`).start();
     try {
@@ -28,7 +53,6 @@ const localStrategy = passport.use(
         spinner.fail();
         throw new Error('Incorrect Password');
       }
-
       const tokenObject = issueJwt(user);
       spinner.succeed();
       return done(null, user, { message: 'Login Successful' });
@@ -39,4 +63,4 @@ const localStrategy = passport.use(
   })
 );
 
-export default localStrategy;
+export default { create, login };
