@@ -2,43 +2,43 @@ import express from "express";
 import ora from "ora";
 import chalk from "chalk";
 import routes from "./routes/index.mjs";
-import localStrategy from "./auth/passport.mjs";
-import passport from "passport";
-
+import passportConfig from "./config/passport.mjs";
+// ----------------------------------------------------------------------------
 // Environment Variables
-//-----------------------------------------------------------------------------
-const SERVER_PORT = ( process.env.SERVER_PORT || 8000 );
-
+// ----------------------------------------------------------------------------
+const SERVER_PORT = process.env.SERVER_PORT || 8000;
 // App Initialization
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 const app = express();
 app.set("title", "Trex API Server");
 
 // Middleware
-//-----------------------------------------------------------------------------
-app.use( express.json() ); // JSON parsing
-app.use( passport.initialize() );
+// ----------------------------------------------------------------------------
+app.use(express.json()); // JSON parsing
+passportConfig(app);
 
 // Routes
-//-----------------------------------------------------------------------------
-app.get("/", ( request, response ) => {
-  response.redirect("/api")
+// ----------------------------------------------------------------------------
+app.get("/", (request, response) => {
+  response.redirect("/api");
 });
 
 app.use("/api/", routes);
 
 // Server
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Ora CLI Spinner options
 const OraOptions = {
   text: chalk`{blue Trex API Server:} Connecting`,
-  color: "blue"
-}
+  color: "blue",
+};
 
 const spinner = ora(OraOptions).start(); // Start spinner
 const server = app.listen(SERVER_PORT, () => {
   setTimeout(() => {
-    spinner.succeed(chalk`{blue Trex API Server:} Connected on port (${SERVER_PORT})`) // Success Message
+    spinner.succeed(
+      chalk`{blue Trex API Server:} Connected on port (${SERVER_PORT})`
+    ); // Success Message
   }, 2000);
 });
 
