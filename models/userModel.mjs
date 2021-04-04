@@ -1,11 +1,13 @@
-import mongoose from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
-import argon2 from 'argon2';
-import ora from 'ora';
+// Database Model: User -------------------------------------------------------
+import mongoose from 'mongoose'; // Mongoose.js MongoDB ORM,
+import uniqueValidator from 'mongoose-unique-validator'; // Mongoose Validator Plugin,
+import argon2 from 'argon2'; // Argon2 Encryption Algorithm,
+import ora from 'ora'; // Ora CLI Spinner.
+
+// Global Variables -----------------------------------------------------------
 const { Schema, model } = mongoose;
 
-// User Schema
-// ----------------------------------------------------------------------------
+// User Schema ----------------------------------------------------------------
 const UserSchema = new Schema({
   full_name: {
     type: String,
@@ -31,21 +33,17 @@ const UserSchema = new Schema({
   },
 });
 
-// Middleware
-// ----------------------------------------------------------------------------
+// Middleware -----------------------------------------------------------------
 // Throw validation error when "unique" constraint is not met
 UserSchema.plugin(uniqueValidator);
 
-// Password Authentication bcrypt
-// https://mongodb.com/blog/post/password-authentication-with-mongoose-part-1
-// ----------------------------------------------------------------------------
-
+// Hooks ----------------------------------------------------------------------
+// PRE-SAVE HOOK:
+// Hash a User’s password before saving to database.
 UserSchema.pre('save', async function (next) {
   const user = this;
-
   // Only hash the password if it is modified or new.
   if (!user.isModified('password')) return next();
-
   try {
     const argonOptions = {
       // argon2i slower and resistant against tradeoff attacks,
@@ -54,36 +52,47 @@ UserSchema.pre('save', async function (next) {
       hashLength: 50,
       timeCost: 20, //
     };
-
+    // Hash Password
     const hash = await argon2.hash(user.password, argonOptions);
-
     // Override the clear text password with the hashed one.
     user.password = hash;
     next();
   } catch (error) {
+    // Return Server Error
     return next(error);
   }
 });
 
-// Validate a candidate password against the user’s current password.
+// Methods --------------------------------------------------------------------
+// VALIDATE HASHED PASSWORD:
+// Validate candidate password against User’s current password.
 UserSchema.methods.validPassword = async function (candidatePassword) {
   const spinner = ora(`Password: ${this.email}`).start();
   try {
-    const isValidPass = await argon2.verify(this.password, candidatePassword);
-    if (!isValidPass) {
+    // De-hash User’s password and validate against candidate.
+    const isValidPassword = await argon2.verify(
+      this.password,
+      candidatePassword
+    );
+    // If the passwords do not match, throw "Unauthorized" error.
+    if (!isValidPassword) {
       throw new Error('Unauthorized');
     }
+    // If the passwords match, return boolean True (isValidPassword.)
     spinner.succeed(`Password: ${this.email} (Authorized)`);
-    return isValidPass;
+    return isValidPassword;
   } catch (error) {
+    // Return Server error.
     spinner.fail(`Password: ${this.email} (${error.message})`);
     return false;
   }
 };
 
-// Find a user by their email address
+// Statics --------------------------------------------------------------------
+// FIND BY EMAIL:
+// Find a user by their email address.
 UserSchema.statics.findByEmail = function (email) {
   return this.findOne({ email: email });
 };
 
-export default model('User', UserSchema);
+export default model('UserModel', UserSchema);

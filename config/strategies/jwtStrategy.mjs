@@ -1,39 +1,42 @@
-// -----------------------------------------------------------------------------
-// JSON Web Token Strategy for Passport.js
-// -----------------------------------------------------------------------------
+// Passport Strategy: JSON Web Tokens (JWT) -----------------------------------
 
-import passport from 'passport'; // Passport.js
-import passportJwt from 'passport-jwt'; // Passport.js JWT Strategy
-import ora from 'ora'; // CLI Spinner
-import database from '../../models/index.mjs'; // MongoDB Database
+import passport from 'passport'; // Passport.js,
+import passportJwt from 'passport-jwt'; // Passport.js JWT Strategy,
+import ora from 'ora'; // CLI Spinner,
+import database from '../../models/models.mjs'; // MongoDB Database Models.
 
-const { User } = database; // Import User Model
+// Global Variables -----------------------------------------------------------
+const { UserModel } = database; // User Model,
 const { ExtractJwt, Strategy } = passportJwt;
-const { JWT_SECRET } = process.env; // Environment Variables
+const { JWT_SECRET } = process.env; // Environment Variables.
 
 const options = {
+  // Strategy Options
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Extract Token from Request Header.
   secretOrKey: JWT_SECRET,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   session: false,
 };
-
+// Strategies -----------------------------------------------------------------
+// JSON WEB TOKEN STRATEGY:
 const jwtStrategy = passport.use(
   new Strategy(options, async (token, done) => {
-    // Initialize spinner outside of try / catch statement
+    // Initialize spinner outside of try / catch statement.
     const spinner = ora(`User Authentication: ${token.email}`).start();
     try {
-      const user = await User.findById(token.id);
-
+      // Get User by Token ID.
+      const user = await UserModel.findById(token.id);
+      // Return failure message if user not found.
       if (!user) {
         spinner.fail();
-        return done(null, false, { message: 'Invalid User' });
+        return done(null, false, { message: 'User Not Found' });
       }
-
+      // Return the user if found.
       spinner.succeed();
       return done(null, user);
     } catch (error) {
+      // Return Server Error
       spinner.fail(`User Authentication Error: “${error.message}”`);
-      done(error);
+      return done(error.message);
     }
   })
 );

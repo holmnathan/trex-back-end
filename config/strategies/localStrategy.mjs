@@ -1,66 +1,79 @@
-import passport from 'passport';
-import passportLocal from 'passport-local';
-import ora from 'ora';
-import database from '../../models/index.mjs'; // MongoDB Database
-import issueJwt from '../../lib/issueJwt.mjs';
+// Passport Strategy: Local ---------------------------------------------------
+import passport from 'passport'; // Passport.js,
+import passportLocal from 'passport-local'; // Passport.js JWT Strategy,
+import ora from 'ora'; // CLI Spinner,
+import database from '../../models/models.mjs'; // MongoDB Database Models,
+import jwtIssuer from '../../lib/jwtIssuer.mjs'; // JWT Token Generator.
 
-const { User } = database; // Import User Model
+// Global Variables -----------------------------------------------------------
+const { UserModel } = database; // User Model.
 const { Strategy } = passportLocal;
 
 const options = {
-  usernameField: 'email',
+  // Strategy Options
+  usernameField: 'email', // Change "username" variable to "email."
   session: false,
-  passReqToCallback: true,
-  failWithError: true,
+  passReqToCallback: true, // Access Post Request body.
 };
 
-const create = passport.use(
+// Strategies -----------------------------------------------------------------
+// USER REGISTRATION:
+const register = passport.use(
   'create',
   new Strategy(options, async (request, email, password, done) => {
-    const { full_name, display_name } = request.body;
-    // Initialize spinner outside of try / catch statement
+    const { full_name, display_name } = request.body; // Get Post Request body.
+    // Initialize spinner outside of Try / Catch statement.
     const spinner = ora(`Create User: ${email}`).start();
     try {
-      const user = await User.create({
+      // Attempt user creation.
+      const user = await UserModel.create({
         email,
         password,
         full_name,
         display_name,
       });
+      // Return user if successful.
       spinner.succeed();
       return done(null, user);
     } catch (error) {
+      // Return server error.
       spinner.fail(`Create User: ${email} (${error.message})`);
-      return done(null, false, { message: error.message });
+      return done(error.message);
     }
   })
 );
 
+// USER LOGIN:
 const login = passport.use(
   'login',
   new Strategy(options, async (request, email, password, done) => {
-    // Initialize spinner outside of try / catch statement
+    // Initialize spinner outside of try / catch statement.
     const spinner = ora(`Log In: ${email}`).start();
     try {
-      const user = await User.findByEmail(email);
+      // Find User by email address.
+      const user = await UserModel.findByEmail(email);
+      // Return failure message if user not found.
       if (!user) {
         spinner.fail();
         throw new Error('User not found');
       }
-
+      // Validate User’s password.
       const validate = await user.validPassword(password);
+      // Return failure message if password incorrect.
       if (!validate) {
         spinner.fail();
         throw new Error('Incorrect Password');
       }
-      const tokenObject = issueJwt(user);
+      // Generate a JWT and return the user if successful.
+      const tokenObject = jwtIssuer(user);
       spinner.succeed();
       return done(null, user, { message: 'Login Successful' });
     } catch (error) {
+      // Catch Server Error
       spinner.fail(`Log In: ${email} (${error.message})`);
-      return done(null, false, { message: error.message });
+      return done(error.message);
     }
   })
 );
 
-export default { create, login };
+export default { register, login };
