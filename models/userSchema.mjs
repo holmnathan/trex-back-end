@@ -8,30 +8,29 @@ import ora from 'ora'; // Ora CLI Spinner.
 const { Schema } = mongoose;
 
 // User Schema ----------------------------------------------------------------
-const UserSchema = new Schema({
-  full_name: {
-    type: String,
-    required: true,
+const UserSchema = new Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
+    },
+    displayName: {
+      type: String,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      uniqueCaseInsensitive: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      minLength: 8,
+    },
   },
-  display_name: {
-    type: String,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    uniqueCaseInsensitive: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    minLength: 8,
-  },
-  date: {
-    type: Date,
-    default: Date.now(),
-  },
-});
+  { timestamps: true }
+);
 
 // Middleware -----------------------------------------------------------------
 // Throw validation error when "unique" constraint is not met

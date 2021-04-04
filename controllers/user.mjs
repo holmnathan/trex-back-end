@@ -16,19 +16,19 @@ const testAuthorized = (request, response) => {
 // POST ROUTE: "/login"
 // User Log In.
 const login = (request, response) => {
-  const { email, full_name, _id } = request.user;
-  response.json({ _id, email, full_name, message: 'User Log In Successful' });
+  const { email, fullName, _id } = request.user;
+  response.json({ _id, email, fullName, message: 'User Log In Successful' });
 };
 
 // POST ROUTE: "/register"
 // User Registration.
 const register = (request, response) => {
-  const { email, display_name, full_name, _id } = request.user;
+  const { email, displayName, fullName, _id } = request.user;
   response.json({
     _id,
     email,
-    full_name,
-    display_name,
+    fullName,
+    displayName,
     message: 'User Registration Successful',
   });
 };

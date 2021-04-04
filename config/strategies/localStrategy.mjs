@@ -20,7 +20,7 @@ const options = {
 const register = passport.use(
   'create',
   new Strategy(options, async (request, email, password, done) => {
-    const { full_name, display_name } = request.body; // Get Post Request body.
+    const { fullName, displayName } = request.body; // Get Post Request body.
     // Initialize spinner outside of Try / Catch statement.
     const spinner = ora(`Create User: ${email}`).start();
     try {
@@ -28,8 +28,8 @@ const register = passport.use(
       const user = await database.User.create({
         email,
         password,
-        full_name,
-        display_name,
+        fullName,
+        displayName,
       });
       // Return user if successful.
       spinner.succeed();
