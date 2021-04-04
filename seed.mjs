@@ -15,6 +15,7 @@ const registerUser = (candidateUser) => {
       spinner.fail(`User Not Created | ${error.message}`);
     }
   }, 1000);
+  process.exit();
 };
 // registerUser({
 //   fullName: "Tester",
@@ -38,6 +39,7 @@ const validatePassword = async (candidateEmail, candidatePassword) => {
   } catch (error) {
     console.log(`Password Validation Error: (${error.message})`);
   }
+  process.exit();
 };
 // validatePassword("burger@king.com", "1234test");
 
@@ -54,6 +56,7 @@ const deleteAllUsers = () => {
       spinner.fail(`Delete All Users: (${error.message})`);
     }
   });
+  process.exit();
 };
 // deleteAllUsers();
 
@@ -67,6 +70,7 @@ const findUserByEmail = async (email) => {
   } catch (error) {
     spinner.fail(`Email ${email}: (${error.message})`);
   }
+  process.exit();
 };
 // findUserByEmail("burger@king.com");
 
@@ -80,6 +84,7 @@ const createTrip = async (tripObject) => {
   } catch (error) {
     console.log(error.message);
   }
+  process.exit();
 };
 // createTrip({
 //   name: 'Florida, 2022',
@@ -98,6 +103,7 @@ const getTripById = async (tripId) => {
   } catch (error) {
     console.log(error.message);
   }
+  process.exit();
 };
 // getTripById('6069376b0148ce65adf36d9a');
 
@@ -106,12 +112,12 @@ const getTripWithTravelers = async (tripId) => {
   try {
     const trip = await database.Trip.findById(tripId).populate('travelers');
     console.log(trip);
-    return trip;
   } catch (error) {
     console.log(error.message);
   }
+  process.exit();
 };
-getTripWithTravelers('6069376b0148ce65adf36d9a');
+// getTripWithTravelers('6069376b0148ce65adf36d9a');
 
 const addTraveler = async (tripId, userId) => {
   try {
@@ -129,5 +135,6 @@ const addTraveler = async (tripId, userId) => {
   } catch (error) {
     console.log(error.message);
   }
+  process.exit();
 };
-// addTraveler('6069376b0148ce65adf36d9a', '6068ee3931f47237968e9f1a');
+addTraveler('6069376b0148ce65adf36d9a', '6068ee3931f47237968e9f1a');
