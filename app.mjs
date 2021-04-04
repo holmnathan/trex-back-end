@@ -3,6 +3,7 @@ import express from 'express'; // Express.js Node.js Framework,
 import ora from 'ora'; // CLI Spinner,
 import chalk from 'chalk'; // CLI Color Output,
 import routes from './routes/routes.mjs'; // App Routes,
+import cors from 'cors';
 import passportConfig from './config/passport.mjs'; // Passport Configuration
 
 // Environment Variables ------------------------------------------------------
@@ -16,6 +17,8 @@ app.set('title', 'Trex API Server');
 // Middleware
 // ----------------------------------------------------------------------------
 app.use(express.json()); // JSON parsing
+app.use(express.urlencoded({ extended: false }));
+app.use(cors()); // allow all CORS requests
 passportConfig(app); // Passport Callback Function
 
 // Routes ---------------------------------------------------------------------
