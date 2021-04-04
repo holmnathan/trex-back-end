@@ -6,7 +6,6 @@ import ora from 'ora'; // CLI Spinner,
 import database from '../../models/models.mjs'; // MongoDB Database Models.
 
 // Global Variables -----------------------------------------------------------
-const { UserModel } = database; // User Model,
 const { ExtractJwt, Strategy } = passportJwt;
 const { JWT_SECRET } = process.env; // Environment Variables.
 
@@ -24,7 +23,7 @@ const jwtStrategy = passport.use(
     const spinner = ora(`User Authentication: ${token.email}`).start();
     try {
       // Get User by Token ID.
-      const user = await UserModel.findById(token.id);
+      const user = await database.User.findById(token.id);
       // Return failure message if user not found.
       if (!user) {
         spinner.fail();

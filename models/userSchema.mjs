@@ -1,11 +1,11 @@
-// Database Model: User -------------------------------------------------------
+// Model Schema: User ---------------------------------------------------------
 import mongoose from 'mongoose'; // Mongoose.js MongoDB ORM,
 import uniqueValidator from 'mongoose-unique-validator'; // Mongoose Validator Plugin,
 import argon2 from 'argon2'; // Argon2 Encryption Algorithm,
 import ora from 'ora'; // Ora CLI Spinner.
 
 // Global Variables -----------------------------------------------------------
-const { Schema, model } = mongoose;
+const { Schema } = mongoose;
 
 // User Schema ----------------------------------------------------------------
 const UserSchema = new Schema({
@@ -95,4 +95,4 @@ UserSchema.statics.findByEmail = function (email) {
   return this.findOne({ email: email });
 };
 
-export default model('UserModel', UserSchema);
+export default UserSchema;

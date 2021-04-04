@@ -6,7 +6,6 @@ import database from '../../models/models.mjs'; // MongoDB Database Models,
 import jwtIssuer from '../../lib/jwtIssuer.mjs'; // JWT Token Generator.
 
 // Global Variables -----------------------------------------------------------
-const { UserModel } = database; // User Model.
 const { Strategy } = passportLocal;
 
 const options = {
@@ -26,7 +25,7 @@ const register = passport.use(
     const spinner = ora(`Create User: ${email}`).start();
     try {
       // Attempt user creation.
-      const user = await UserModel.create({
+      const user = await database.User.create({
         email,
         password,
         full_name,
@@ -51,7 +50,7 @@ const login = passport.use(
     const spinner = ora(`Log In: ${email}`).start();
     try {
       // Find User by email address.
-      const user = await UserModel.findByEmail(email);
+      const user = await database.User.findByEmail(email);
       // Return failure message if user not found.
       if (!user) {
         spinner.fail();

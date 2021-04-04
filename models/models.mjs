@@ -2,11 +2,17 @@
 import mongoose from 'mongoose'; // Mongoose.js ORM
 import ora from 'ora'; // CLI Spinner
 
-// Models ---------------------------------------------------------------------
-import User from './UserModel.mjs'; // User Model
+// Schema ---------------------------------------------------------------------
+import UserSchema from './userSchema.mjs'; // User Model
+import TripSchema from './tripSchema.mjs'; // Trip Model
 
 // Global Variables -----------------------------------------------------------
 const { DATABASE_NAME, DATABASE_HOST, DATABASE_PORT } = process.env; // Environment Variables
+const { model } = mongoose;
+
+// Models
+const Trip = model('trip', TripSchema);
+const User = model('user', UserSchema);
 
 // MongoDB Database Connection ------------------------------------------------
 // CONNECT DATABASE:
@@ -32,4 +38,5 @@ connectDatabase();
 
 export default {
   User,
+  Trip,
 };
