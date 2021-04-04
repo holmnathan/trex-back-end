@@ -73,12 +73,13 @@ UserSchema.methods.validPassword = async function (candidatePassword) {
       this.password,
       candidatePassword
     );
-    // If the passwords do not match, throw "Unauthorized" error.
+    // If the passwords do not match return "Incorrect".
     if (!isValidPassword) {
-      throw new Error('Unauthorized');
+      spinner.fail(`Password: ${this.email} (Incorrect)`);
+      return false;
     }
     // If the passwords match, return boolean True (isValidPassword.)
-    spinner.succeed(`Password: ${this.email} (Authorized)`);
+    spinner.succeed(`Password: ${this.email} (Correct)`);
     return isValidPassword;
   } catch (error) {
     // Return Server error.
