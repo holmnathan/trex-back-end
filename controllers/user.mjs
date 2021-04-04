@@ -10,27 +10,22 @@ const test = (request, response) => {
 // GET ROUTE: "/test-authorized"
 // Test Request Header for valid JSON Web Authentication Token.
 const testAuthorized = (request, response) => {
-  response.json({ message: 'Endpoint Valid: User (Authenticated)' });
+  const { email } = request.user;
+  response.json({ message: `Endpoint Valid: User Authenticated (${email})` });
 };
 
 // POST ROUTE: "/login"
 // User Log In.
 const login = (request, response) => {
-  const { email, fullName, _id } = request.user;
-  response.json({ _id, email, fullName, message: 'User Log In Successful' });
+  const { message } = request.authInfo;
+  response.json({ ...request.user, message });
 };
 
 // POST ROUTE: "/register"
 // User Registration.
 const register = (request, response) => {
-  const { email, displayName, fullName, _id } = request.user;
-  response.json({
-    _id,
-    email,
-    fullName,
-    displayName,
-    message: 'User Registration Successful',
-  });
+  const { message } = request.authInfo;
+  response.json({ ...request.user, message });
 };
 
 export default {

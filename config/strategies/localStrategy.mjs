@@ -31,9 +31,14 @@ const register = passport.use(
         fullName,
         displayName,
       });
-      // Return user if successful.
-      spinner.succeed();
-      return done(null, user);
+      // Generate a JWT and return the user if successful.
+      const tokenObject = jwtIssuer(user);
+      const { fullName, displayName, _id } = user;
+      return done(
+        null,
+        { ...tokenObject, email, fullName, displayName, _id },
+        { message: 'User Created' }
+      );
     } catch (error) {
       // Return server error.
       spinner.fail(`Create User: ${email} (${error.message})`);
@@ -53,20 +58,25 @@ const login = passport.use(
       const user = await database.User.findByEmail(email);
       // Return failure message if user not found.
       if (!user) {
-        spinner.fail();
-        throw new Error('User not found');
+        spinner.fail(`Log In: ${email} (User Not Found)`);
+        return done(null, false, { message: 'User Not Found' });
       }
       // Validate User’s password.
       const validate = await user.validPassword(password);
       // Return failure message if password incorrect.
       if (!validate) {
-        spinner.fail();
-        throw new Error('Incorrect Password');
+        spinner.fail(`Log In: ${email} (Incorrect Password)`);
+        return done(null, false, { message: 'Incorrect Password' });
       }
       // Generate a JWT and return the user if successful.
       const tokenObject = jwtIssuer(user);
+      const { fullName, displayName, _id } = user;
       spinner.succeed();
-      return done(null, user, { message: 'Login Successful' });
+      return done(
+        null,
+        { ...tokenObject, email, fullName, displayName, _id },
+        { message: 'Login Successful' }
+      );
     } catch (error) {
       // Catch Server Error
       spinner.fail(`Log In: ${email} (${error.message})`);
