@@ -27,7 +27,13 @@ const TripSchema = new Schema(
     description: {
       type: Date,
     },
-    travelers: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
+    travelers: [
+      {
+        type: mongoose.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -39,6 +45,17 @@ TripSchema.plugin(uniqueValidator);
 // Hooks ----------------------------------------------------------------------
 
 // Methods --------------------------------------------------------------------
+// Add Traveler:
+// Add a traveler to a trip by email
+TripSchema.methods.addTravelerById = function (user) {
+  try {
+    this.travelers.addToSet(user);
+    this.save();
+    return this;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 // Statics --------------------------------------------------------------------
 

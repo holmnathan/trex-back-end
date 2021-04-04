@@ -34,7 +34,7 @@ const connectDatabase = () => {
 connectDatabase();
 
 // Models ---------------------------------------------------------------------
-database.Trip = model('trip', TripSchema);
-database.User = model('user', UserSchema);
+database.Trip = model('Trip', TripSchema);
+database.User = model('User', UserSchema);
 
 export default database;
