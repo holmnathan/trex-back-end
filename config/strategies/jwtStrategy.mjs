@@ -3,7 +3,7 @@
 import passport from 'passport'; // Passport.js,
 import passportJwt from 'passport-jwt'; // Passport.js JWT Strategy,
 import ora from 'ora'; // CLI Spinner,
-import database from '../../models/models.mjs'; // MongoDB Database Models.
+import database from '../../models/database.mjs'; // MongoDB Database Models.
 
 // Global Variables -----------------------------------------------------------
 const { ExtractJwt, Strategy } = passportJwt;

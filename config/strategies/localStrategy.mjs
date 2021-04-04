@@ -2,7 +2,7 @@
 import passport from 'passport'; // Passport.js,
 import passportLocal from 'passport-local'; // Passport.js JWT Strategy,
 import ora from 'ora'; // CLI Spinner,
-import database from '../../models/models.mjs'; // MongoDB Database Models,
+import database from '../../models/database.mjs'; // MongoDB Database Models,
 import jwtIssuer from '../../lib/jwtIssuer.mjs'; // JWT Token Generator.
 
 // Global Variables -----------------------------------------------------------
