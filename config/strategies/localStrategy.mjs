@@ -20,20 +20,23 @@ const options = {
 const register = passport.use(
   'create',
   new Strategy(options, async (request, email, password, done) => {
-    const { fullName, displayName } = request.body; // Get Post Request body.
     // Initialize spinner outside of Try / Catch statement.
     const spinner = ora(`Create User: ${email}`).start();
     try {
       // Attempt user creation.
+      const { fullName, displayName } = request.body; // Get Post Request body.
+      console.log(fullName);
       const user = await database.User.create({
         email,
         password,
         fullName,
         displayName,
       });
+
+      console.log(user);
       // Generate a JWT and return the user if successful.
-      const tokenObject = jwtIssuer(user);
-      const { fullName, displayName, _id } = user;
+      const tokenObject = await jwtIssuer(user);
+      const { _id } = await user;
       return done(
         null,
         { ...tokenObject, email, fullName, displayName, _id },
