@@ -19,4 +19,8 @@ router.get(
   controller.trip.testAuthorized
 );
 
+// POST ROUTE: "/add"
+// Add a new trip with a single traveler.
+router.post('/add', passport.authenticate('jwt'), controller.trip.add);
+
 export default router;
