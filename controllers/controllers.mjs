@@ -2,6 +2,7 @@
 
 // Sub-Controllers ------------------------------------------------------------
 import user from './user.mjs'; // User Controller
+import trip from './trip.mjs'; // Trip Controller
 
 // Controllers ----------------------------------------------------------------
 // GET ROUTE: "/"
@@ -13,4 +14,5 @@ const api = (request, response) => {
 export default {
   api,
   user,
+  trip,
 };
