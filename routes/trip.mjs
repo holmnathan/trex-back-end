@@ -19,6 +19,10 @@ router.get(
   controller.trip.testAuthorized
 );
 
+// GET ROUTE: "/get"
+// Test Request Header for valid JSON Web Authentication Token.
+router.get('/get/:id', passport.authenticate('jwt'), controller.trip.get);
+
 // POST ROUTE: "/add"
 // Add a new trip with a single traveler.
 router.post('/add', passport.authenticate('jwt'), controller.trip.add);

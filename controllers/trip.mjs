@@ -54,8 +54,31 @@ const add = async (request, response) => {
   }
 };
 
+// GET ROUTE: "/get/:id"
+// Get all trips for a user
+const get = async (request, response) => {
+  console.log('GET!GET!GET!GET!GET!GET!GET!GET!GET!GET!GET!GET!GET!');
+  const where = request.where();
+  const user = request.params.id;
+  try {
+    const trips = await Trip.find({ travelers: user });
+    const successMessage = {
+      name: 'Trips Found',
+      message: `User: ${user}`,
+      where,
+    };
+    logger.success(successMessage);
+    response.json(trips);
+  } catch (error) {
+    const errorMessage = logger.mongooseErrors(error, where);
+    response.status(400).json(errorMessage);
+    return;
+  }
+};
+
 export default {
   test,
   testAuthorized,
   add,
+  get,
 };
