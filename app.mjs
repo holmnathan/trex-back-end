@@ -20,6 +20,13 @@ app.use(express.json()); // JSON parsing
 app.use(express.urlencoded({ extended: false }));
 app.use(cors()); // allow all CORS requests
 passportConfig(app); // Passport Callback Function
+app.use((request, response, next) => {
+  // URL of App
+  request.where = () => {
+    return `${request.method} ${request.originalUrl}`;
+  };
+  return next();
+});
 
 // Routes ---------------------------------------------------------------------
 app.get('/', (request, response) => {
