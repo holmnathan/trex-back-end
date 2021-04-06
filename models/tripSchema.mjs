@@ -25,7 +25,7 @@ const TripSchema = new Schema(
       required: true,
     },
     description: {
-      type: Date,
+      type: String,
     },
     travelers: [
       {
@@ -43,6 +43,31 @@ const TripSchema = new Schema(
 TripSchema.plugin(uniqueValidator);
 
 // Hooks ----------------------------------------------------------------------
+
+// Hooks ----------------------------------------------------------------------
+// PRE-SAVE HOOK:
+// Validate 1 user is supplied at time of creation
+TripSchema.pre('save', async function (next) {
+  const trip = this;
+  if (!trip.isNew) next(); // Only throw error if the document is new
+  try {
+    if (trip.travelers.length !== 1) {
+      // Create a new Mongoose error to return
+      const validatorError = new mongoose.Error.ValidationError(null);
+      validatorError.addError(
+        'travelers',
+        new mongoose.Error.ValidatorError({
+          message:
+            'Exactly 1 traveler must be supplied when creating a new trip.',
+        })
+      );
+      return next(validatorError);
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Methods --------------------------------------------------------------------
 // Add Traveler:
