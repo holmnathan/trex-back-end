@@ -9,7 +9,6 @@ import TripSchema from './tripSchema.mjs'; // Trip Model
 // Global Variables -----------------------------------------------------------
 const { DATABASE_NAME, DATABASE_HOST, DATABASE_PORT } = process.env; // Environment Variables
 const { model } = mongoose;
-const database = {};
 
 // MongoDB Database Connection ------------------------------------------------
 // CONNECT DATABASE:
@@ -34,7 +33,7 @@ const connectDatabase = () => {
 connectDatabase();
 
 // Models ---------------------------------------------------------------------
-database.Trip = model('Trip', TripSchema);
-database.User = model('User', UserSchema);
+const Trip = model('Trip', TripSchema);
+const User = model('User', UserSchema);
 
-export default database;
+export { Trip, User };
