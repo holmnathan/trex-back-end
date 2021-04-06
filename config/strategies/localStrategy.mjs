@@ -2,7 +2,7 @@
 import passport from 'passport'; // Passport.js,
 import passportLocal from 'passport-local'; // Passport.js JWT Strategy,
 import ora from 'ora'; // CLI Spinner,
-import database from '../../models/database.mjs'; // MongoDB Database Models,
+import { User } from '../../models/database.mjs'; // MongoDB Database Models,
 import jwtIssuer from '../../lib/jwtIssuer.mjs'; // JWT Token Generator.
 
 // Global Variables -----------------------------------------------------------
@@ -26,7 +26,7 @@ const register = passport.use(
       // Attempt user creation.
       const { fullName, displayName } = request.body; // Get Post Request body.
       console.log(fullName);
-      const user = await database.User.create({
+      const user = await User.create({
         email,
         password,
         fullName,
@@ -58,7 +58,7 @@ const login = passport.use(
     const spinner = ora(`Log In: ${email}`).start();
     try {
       // Find User by email address.
-      const user = await database.User.findByEmail(email);
+      const user = await User.findByEmail(email);
       // Return failure message if user not found.
       if (!user) {
         spinner.fail(`Log In: ${email} (User Not Found)`);

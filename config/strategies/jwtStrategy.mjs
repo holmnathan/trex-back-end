@@ -3,7 +3,7 @@
 import passport from 'passport'; // Passport.js,
 import passportJwt from 'passport-jwt'; // Passport.js JWT Strategy,
 import ora from 'ora'; // CLI Spinner,
-import database from '../../models/database.mjs'; // MongoDB Database Models.
+import { User } from '../../models/database.mjs'; // MongoDB Database Models.
 
 // Global Variables -----------------------------------------------------------
 const { ExtractJwt, Strategy } = passportJwt;
@@ -23,7 +23,7 @@ const jwtStrategy = passport.use(
     const spinner = ora(`User Authentication: ${token.email}`).start();
     try {
       // Get User by Token ID.
-      const user = await database.User.findById(token.id);
+      const user = await User.findById(token.id);
       // Return failure message if user not found.
       if (!user) {
         spinner.fail();
