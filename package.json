@@ -8,7 +8,8 @@
     "start": "nodemon -r dotenv/config app.mjs",
     "seed": "node -r dotenv/config seed.mjs",
     "prettier": "prettier --write 'routes/*.mjs' 'models/*.mjs' 'controllers/*.mjs' 'config/*.mjs' 'config/strategies/*.mjs' '*.mjs'",
-    "standard": "standard --fix"
+    "standard": "standard --fix",
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "chalk": "^4.1.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "flow": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.3",
     "mongoose-unique-validator": "^2.0.3",
@@ -44,6 +46,10 @@
     "prettier": "^2.2.1"
   },
   "devDependencies": {
-    "dotenv": "^8.2.0"
+    "@babel/cli": "^7.13.14",
+    "@babel/core": "^7.13.14",
+    "@babel/preset-flow": "^7.13.13",
+    "dotenv": "^8.2.0",
+    "flow-bin": "^0.148.0"
   }
 }
