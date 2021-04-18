@@ -30,7 +30,7 @@ const TripSchema = new Schema(
     travelers: [
       {
         type: mongoose.ObjectId,
-        ref: 'User',
+        ref: "User",
         required: true,
       },
     ],
@@ -75,6 +75,18 @@ TripSchema.pre('save', async function (next) {
 TripSchema.methods.addTravelerById = function (user) {
   try {
     this.travelers.addToSet(user);
+    this.save();
+    return this;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// Add Flight:
+// Add a Flight to a trip by ID
+TripSchema.methods.addFlightById = function (flight) {
+  try {
+    this.travelers.addToSet(flight);
     this.save();
     return this;
   } catch (error) {
