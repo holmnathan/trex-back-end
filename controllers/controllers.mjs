@@ -3,6 +3,7 @@
 // Sub-Controllers ------------------------------------------------------------
 import user from './user.mjs'; // User Controller
 import trip from './trip.mjs'; // Trip Controller
+import event from './event.mjs'; // Event Controller
 
 // Controllers ----------------------------------------------------------------
 // GET ROUTE: "/"
@@ -15,4 +16,5 @@ export default {
   api,
   user,
   trip,
+  event,
 };
