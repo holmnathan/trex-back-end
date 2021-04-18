@@ -5,6 +5,8 @@ import ora from 'ora'; // CLI Spinner
 // Schema ---------------------------------------------------------------------
 import UserSchema from './userSchema.mjs'; // User Model
 import TripSchema from './tripSchema.mjs'; // Trip Model
+import EventSchema from './EventSchema.mjs'; // Event Model
+import FlightSchema from './FlightSchema.mjs'; // Flight Model
 
 // Global Variables -----------------------------------------------------------
 const { DATABASE_NAME, DATABASE_HOST, DATABASE_PORT } = process.env; // Environment Variables
@@ -35,5 +37,7 @@ connectDatabase();
 // Models ---------------------------------------------------------------------
 const Trip = model('Trip', TripSchema);
 const User = model('User', UserSchema);
+const Event = model('Event', EventSchema);
+const Flight = model('Flight', FlightSchema);
 
-export { Trip, User };
+export { Trip, User, Event, Flight };
