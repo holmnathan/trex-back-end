@@ -1,12 +1,12 @@
 import ora from 'ora';
-import database from './models/database.mjs';
+import { User, Trip, Flight } from './models/database.mjs';
 
 // CREATE USER:
 const registerUser = (candidateUser) => {
   const spinner = ora('Create User').start();
   setTimeout(async () => {
     try {
-      const user = await new database.User(candidateUser);
+      const user = await new User(candidateUser);
 
       await user.save();
 
@@ -27,7 +27,7 @@ const registerUser = (candidateUser) => {
 const validatePassword = async (candidateEmail, candidatePassword) => {
   try {
     // Find User by candidate email address
-    const user = await database.User.findOne({
+    const user = await User.findOne({
       email: candidateEmail,
     });
 
@@ -48,7 +48,7 @@ const deleteAllUsers = () => {
   const spinner = ora('Delete All Users').start();
   setTimeout(async () => {
     try {
-      const deletedUsers = await database.User.deleteMany();
+      const deletedUsers = await User.deleteMany();
       spinner.succeed(
         `Delete All Users: (${deletedUsers.deletedCount} Deleted)`
       );
@@ -64,7 +64,7 @@ const deleteAllUsers = () => {
 const findUserByEmail = async (email) => {
   const spinner = ora(`Email ${email}`).start();
   try {
-    const user = await database.User.findByEmail(email);
+    const user = await User.findByEmail(email);
     if (!user) throw new Error('User Not Found');
     spinner.succeed(`Email ${email}: (User Found)`);
   } catch (error) {
@@ -78,7 +78,7 @@ const findUserByEmail = async (email) => {
 // CREATE TRIP:
 const createTrip = async (tripObject) => {
   try {
-    const trip = new database.Trip(tripObject);
+    const trip = new Trip(tripObject);
     await trip.save();
     console.log(trip);
   } catch (error) {
@@ -97,7 +97,7 @@ const createTrip = async (tripObject) => {
 // GET TRIP BY ID:
 const getTripById = async (tripId) => {
   try {
-    const trip = await database.Trip.findById(tripId);
+    const trip = await Trip.findById(tripId);
     console.log(trip);
     return trip;
   } catch (error) {
@@ -110,23 +110,24 @@ const getTripById = async (tripId) => {
 // GET TRIP BY ID WITH TRAVELERS:
 const getTripWithTravelers = async (tripId) => {
   try {
-    const trip = await database.Trip.findById(tripId).populate('travelers');
+    const trip = await Trip.findById(tripId).populate("travelers");
     console.log(trip);
   } catch (error) {
     console.log(error.message);
   }
   process.exit();
 };
-// getTripWithTravelers('6069376b0148ce65adf36d9a');
+getTripWithTravelers('6069376b0148ce65adf36d9a');
 
+// Add TRAVELER TO TRIP
 const addTraveler = async (tripId, userId) => {
   try {
-    const trip = await database.Trip.findById(tripId);
+    const trip = await Trip.findById(tripId);
 
     if (!trip) throw new Error('Trip Not Found.');
     // console.log(trip);
 
-    const user = await database.User.findById(userId);
+    const user = await User.findById(userId);
 
     if (!user) throw new Error('User Not Found.');
 
@@ -137,4 +138,55 @@ const addTraveler = async (tripId, userId) => {
   }
   process.exit();
 };
-addTraveler('6069376b0148ce65adf36d9a', '6068ee3931f47237968e9f1a');
+// addTraveler('6069376b0148ce65adf36d9a', '6068ee3931f47237968e9f1a');
+
+// ADD FLIGHT
+const addFlight = async (airline, flightNumber) => {
+  try {
+    const flightCandidate = new Flight(airline, flightNumber);
+    const flight = await flightCandidate.save();
+
+    console.log(flight);
+  } catch (error) {
+    console.log(error.message);
+    process.exit();
+  }
+};
+
+// addFlight({ airline: 'United Airlines', flightNumber: 1234 });
+
+// Find Flight
+const findFlightById = async (flightNumber) => {
+  try {
+  const flight = await Flight.findById(flightNumber);
+  
+  console.log(flight);
+} catch (error) {
+  console.log(error.message);
+  process.exit();
+}
+
+};
+
+// findFlightById('6074c69e62a8f454b3a91d8a');
+
+// ADD FLIGHT TO TRIP
+const addFlightToTrip = async (tripId, flightId) => {
+  try {
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) throw new Error('Trip Not Found.');
+    // console.log(trip);
+
+    const flight = await Flight.findById(flightId);
+
+    if (!flight) throw new Error('Flight Not Found.');
+
+    await trip.addFlightById(flightId);
+    console.log(trip);
+  } catch (error) {
+    console.log(error.message);
+  }
+  process.exit();
+};
+// addFlightToTrip("6069376b0148ce65adf36d9a","6074c69e62a8f454b3a91d8a")
